@@ -1,0 +1,35 @@
+$theme-colors: (
+	'primary': #8e46f7,
+	'secondary': #0e0e10,
+	'success': #1ce1ac,
+	'info': #ff7d50,
+	'warning': #ffbe0b,
+	'danger': #ff007f,
+	'light': #c0ccda,
+	'dark': #001738,
+);
+
+$body-bg: #0e0e10;
+
+$font-family-monospace: 'Consolas', monospace;
+$font-family-sans-serif: 'Inter', sans-serif;
+$headings-font-family: 'Inter', 'Lucida Calligraphy', 'Monotype Corsiva',
+	cursive;
+
+body {
+	font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+	width: 100vw;
+	height: 100vh;
+}
+
+.container-item-1 {
+	display: flex;
+	flex-direction: column;
+}
+
+.blogging {
+	width: 100%;
+	max-width: 600px;
+}
+
+@import '/node_modules/bootstrap/scss/bootstrap.scss';
