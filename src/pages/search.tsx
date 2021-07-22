@@ -4,29 +4,40 @@ import CardUser from '@components/CardUser'
 import SearchBar from '@components/SearchBar'
 
 import { signOut } from 'next-auth/client'
+import { useState } from 'react'
+
+import { useDispatch } from 'react-redux'
+import { setTypeSearch } from '@actions/search'
 
 const filterOptions = [
 	{
 		id: 1,
 		name: 'Usuários',
-		checked: true,
 		value: 'users',
 	},
 	{
 		id: 2,
 		name: 'Repositórios',
-		checked: false,
 		value: 'repos',
 	},
 	{
 		id: 3,
 		name: 'Mais Visitados',
-		checked: false,
 		value: 'repos',
 	},
 ]
 
 export default function SearchPage() {
+	const dispatch = useDispatch()
+	const [checkedValue, setIsChecked] = useState(1)
+
+	const handleCheckedValue = (id: number) => {
+		setIsChecked(id)
+
+		const optionType = filterOptions.filter(option => option.id === id)[0].value
+		dispatch(setTypeSearch(optionType))
+	}
+
 	return (
 		<main className='py-2 px-4 w-100 min-h-100 d-flex flex-column align-items-center'>
 			<div className='w-100 d-flex justify-content-end align-items-center'>
@@ -53,7 +64,8 @@ export default function SearchPage() {
 								name='RadioFilter'
 								id={`radio-${option.id}`}
 								value={option.value}
-								checked={option.checked}
+								checked={checkedValue === option.id}
+								onChange={() => handleCheckedValue(option.id)}
 							/>
 							<label className='form-check-label' htmlFor={`radio-${option.id}`}>
 								{option.name}
