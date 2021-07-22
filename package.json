@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "bootstrap": "^5.0.0-beta3",
     "next": "11.0.1",
     "next-auth": "^3.27.3",
