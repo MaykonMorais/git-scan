@@ -1,7 +1,13 @@
+import { signIn, signOut } from 'next-auth/client'
+
 import Header from '@src/components/Header'
 import { GitHub } from 'react-feather'
 
 export default function Home() {
+	const handleLogin = async (provider: string) => {
+		await signIn(provider, { callbackUrl: `${window.location.origin}/search` })
+	}
+
 	return (
 		<>
 			<Header />
@@ -18,7 +24,10 @@ export default function Home() {
 							grandes projetos desenvolvidos pela comunidade <br />
 							Open Source em todo mundo!
 						</p>
-						<button className='btn btn-primary w-50 mt-2 d-flex align-items-center justify-content-center'>
+						<button
+							className='btn btn-primary w-50 mt-2 d-flex align-items-center justify-content-center'
+							onClick={() => handleLogin('github')}
+						>
 							<GitHub className='align-middle' size={20} />
 							<span className='ms-1'>Entrar com o Github</span>{' '}
 						</button>
