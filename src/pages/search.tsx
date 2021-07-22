@@ -1,6 +1,8 @@
-import { Search, LogOut } from 'react-feather'
+import { LogOut } from 'react-feather'
 
-import CardUser from '@src/components/CardUser'
+import CardUser from '@components/CardUser'
+import SearchBar from '@components/SearchBar'
+
 import { signOut } from 'next-auth/client'
 
 const filterOptions = [
@@ -41,21 +43,7 @@ export default function SearchPage() {
 			</div>
 
 			<div className='mt-5 w-100 d-flex flex-column align-items-center '>
-				<div id='custom-search-input'>
-					<div className='input-group col-md-12'>
-						<input
-							type='text'
-							className='form-control input-lg'
-							placeholder='Faça sua procura por aqui '
-						/>
-						<span className='input-group-btn'>
-							<button className='btn btn-info btn-lg' type='button'>
-								<Search />
-							</button>
-						</span>
-					</div>
-				</div>
-
+				<SearchBar />
 				<div className='mt-3 text-align-center'>
 					{filterOptions.map(option => (
 						<div key={`radio-${option.id}`} className='form-check form-check-inline'>
