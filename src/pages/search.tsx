@@ -1,6 +1,7 @@
-import { Search } from 'react-feather'
+import { Search, LogOut } from 'react-feather'
 
 import CardUser from '@src/components/CardUser'
+import { signOut } from 'next-auth/client'
 
 const filterOptions = [
 	{
@@ -25,7 +26,16 @@ const filterOptions = [
 
 export default function SearchPage() {
 	return (
-		<main className='p-4 w-100 min-h-100 d-flex flex-column align-items-center'>
+		<main className='py-2 px-4 w-100 min-h-100 d-flex flex-column align-items-center'>
+			<div className='w-100 d-flex justify-content-end align-items-center'>
+				<button
+					className='btn btn-primary  mt-2 d-flex align-items-center justify-content-center'
+					onClick={() => signOut()}
+				>
+					<LogOut className='align-middle' size={20} />
+					<span className='ms-1'>Sair</span>{' '}
+				</button>
+			</div>
 			<div className='mt-4 h-25 dW-flex justify-content-center'>
 				<img src='logo.svg' alt='Logo' />
 			</div>
@@ -82,3 +92,5 @@ export default function SearchPage() {
 		</main>
 	)
 }
+
+SearchPage.auth = true
