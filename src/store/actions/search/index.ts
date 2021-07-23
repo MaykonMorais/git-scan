@@ -2,8 +2,13 @@ import { searchRepositories, searchUser } from '@src/services/api'
 
 import { Dispatch } from 'redux'
 import humps from 'humps'
+import { IRepository, IUser } from '@src/types'
 
-export const searchData = (searchText: string, entity: string, page: number) => {
+export const searchData = (
+	searchText: string,
+	entity: string,
+	page: number
+) => {
 	return async (dispatch: Dispatch) => {
 		dispatch({ type: 'SET_LOADING', loading: true })
 
@@ -52,6 +57,16 @@ export const setLoading = (type: string) => {
 		dispatch({
 			type: 'SET_LOADING',
 			typeSearch: type,
+		})
+	}
+}
+
+export const setSelectedItem = (item: IUser | IRepository, tabArea: string) => {
+	return async (dispatch: Dispatch) => {
+		dispatch({
+			type: 'SET_SELECTED_ITEM',
+			selectedItem: item,
+			tabArea,
 		})
 	}
 }

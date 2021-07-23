@@ -49,6 +49,8 @@ export interface ISearchState {
 	loading: boolean
 	totalCount: number
 	query: string
+	selectedItem: IUser
+	tabArea: string
 }
 
 export interface IRootState {

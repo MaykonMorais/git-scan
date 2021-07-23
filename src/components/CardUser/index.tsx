@@ -1,12 +1,25 @@
+import { useRouter } from 'next/router'
 import { Box, Star, Users, UserCheck } from 'react-feather'
 
 import { IUser } from '@src/types'
+
+import { useDispatch } from 'react-redux'
+import { setSelectedItem } from '@actions/search'
 
 interface ICardUser {
 	props: IUser
 }
 
 export default function CardUser({ props }: ICardUser) {
+	const dispatch = useDispatch()
+	const router = useRouter()
+
+	const handleClickRedirect = (area: string) => {
+		dispatch(setSelectedItem(props, area))
+
+		router.push(props.login)
+	}
+
 	return (
 		<div className='u-card u-card--rounded bg-dark p-4'>
 			<div className='p-0 d-flex flex-column'>
@@ -23,11 +36,17 @@ export default function CardUser({ props }: ICardUser) {
 				</div>
 
 				<div className='mt-2 d-flex'>
-					<button className='btn btn-outline-primary mt-2 d-flex align-items-center justify-content-center'>
+					<button
+						className='btn btn-outline-primary mt-2 d-flex align-items-center justify-content-center'
+						onClick={() => handleClickRedirect('repos')}
+					>
 						<Box className='align-middle' size={20} />
 						<span className='ms-1'>Repos</span>{' '}
 					</button>
-					<button className='btn btn-outline-primary mt-2 d-flex align-items-center justify-content-center ms-2'>
+					<button
+						className='btn btn-outline-primary mt-2 d-flex align-items-center justify-content-center ms-2'
+						onClick={() => handleClickRedirect('starred')}
+					>
 						<Star className='align-middle' size={20} />
 						<span className='ms-1'>Starred</span>{' '}
 					</button>

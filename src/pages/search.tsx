@@ -13,7 +13,6 @@ import { IRootState, IUser } from '@src/types'
 import CardRepo from '@src/components/CardRepo'
 
 import Pagination from 'react-responsive-pagination'
-import { typeSearch } from '@src/utils/typeSearch'
 
 const filterOptions = [
 	{

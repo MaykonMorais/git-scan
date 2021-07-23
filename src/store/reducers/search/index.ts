@@ -1,10 +1,12 @@
-import { IUser, ISearchState } from '@src/types'
+import { ISearchState } from '@src/types'
 
 const initialState = {
 	data: [],
 	typeSearch: 'users',
 	loading: false,
 	totalCount: 0,
+	selectedItem: null,
+	tabArea: 'repos',
 }
 
 interface IAction extends ISearchState {
@@ -30,6 +32,13 @@ const searchReducer = (state = initialState, action: IAction) => {
 				...state,
 				loading: action.loading,
 			}
+		case 'SET_SELECTED_ITEM': {
+			return {
+				...state,
+				selectedItem: action.selectedItem,
+				tabArea: action.tabArea,
+			}
+		}
 
 		default:
 			return { ...state }
