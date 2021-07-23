@@ -14,7 +14,9 @@ export default function SearchBar() {
 	const onHandleSearch = async (event: any) => {
 		event.preventDefault()
 
-		dispatch(searchData(event.target.value, searchType, defaultCurrentPage))
+		dispatch(
+			searchData(event.target.searchText.value, searchType, defaultCurrentPage)
+		)
 	}
 
 	return (

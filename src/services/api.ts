@@ -1,10 +1,20 @@
+import { IUser } from '@src/types'
 import axios from 'axios'
 
-const axiosConfig = {
+interface IAuth {
+	username: string
+	password: string
+}
+interface IAxiosConfig {
+	baseURL: string
+	auth: IAuth
+}
+
+const axiosConfig: IAxiosConfig = {
 	baseURL: 'https://api.github.com',
 	auth: {
-		username: process.env.GITHUB_ID,
-		password: process.env.GITHUB_SECRET,
+		username: process.env.GITHUB_ID || '',
+		password: process.env.GITHUB_SECRET || '',
 	},
 }
 
@@ -22,7 +32,7 @@ async function searchUser(searchText: string, page: number) {
 	)
 
 	const result = await Promise.all(
-		data.items.map(async item => {
+		data.items.map(async (item: IUser) => {
 			const { data } = await fetchSpecificUser(item.login)
 
 			return data
