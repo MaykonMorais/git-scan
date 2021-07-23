@@ -5,9 +5,7 @@ const initialState = {
 	typeSearch: 'users',
 	loading: false,
 	totalCount: 0,
-	selectedItem: null,
-	tabArea: 'repos',
-	repos: [],
+	query: '',
 }
 
 interface IAction extends ISearchState {
