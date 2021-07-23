@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router'
-import { Box, Star, Users, UserCheck } from 'react-feather'
+import { Box, Star, Users, UserCheck, Book } from 'react-feather'
 
 import { IUser } from '@src/types'
 
 import { useDispatch } from 'react-redux'
-import { setSelectedItem } from '@actions/search'
+import { setSelectedItem } from '@actions/user'
 
 interface ICardUser {
 	props: IUser
@@ -28,11 +28,14 @@ export default function CardUser({ props }: ICardUser) {
 						className='rounded-circle border border-4 border-primary me-4 mb-1'
 						width={120}
 						src={props.avatarUrl}
-						alt=''
+						alt='Avatar'
 					/>
-					<span className='fw-bolderer fs-3 text-white text-truncate'>
+					<a
+						className='pointer fw-bolderer fs-3 text-white text-truncate'
+						onClick={() => handleClickRedirect('repos')}
+					>
 						{props.name || props.login}
-					</span>
+					</a>
 				</div>
 
 				<div className='mt-2 d-flex'>
@@ -63,7 +66,7 @@ export default function CardUser({ props }: ICardUser) {
 						</li>
 						<li className='list-group-item bg-dark text-white d-flex justify-content-between'>
 							<div className='d-flex align-items-center justify-content-center'>
-								<Star size={22} />
+								<Book size={22} />
 								<span className='ms-2 fw-bolder text--gray'>Gists Públicos</span>
 							</div>
 							<span>{props.publicGists}</span>

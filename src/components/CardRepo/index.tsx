@@ -1,4 +1,4 @@
-import { Eye, Star, Users, Code, User } from 'react-feather'
+import { Eye, Star, Code, GitPullRequest } from 'react-feather'
 
 import { IRepository } from '@src/types'
 
@@ -23,14 +23,15 @@ export default function CardRepo({ props }: ICardRepo) {
 				</div>
 
 				<div className='mt-2 d-flex'>
-					<button className='btn btn-outline-primary  mt-2 d-flex align-items-center justify-content-center'>
+					<a
+						target='_blank'
+						href={`https://github1s.com/${props.fullName}`}
+						className='btn btn-outline-primary  mt-2 d-flex align-items-center justify-content-center'
+						rel='noreferrer'
+					>
 						<Code className='align-middle' size={20} />
-						<span className='ms-1 d-none d-sm-block'>Código</span>{' '}
-					</button>
-					<button className='btn btn-outline-primary mt-2 d-flex align-items-center justify-content-center ms-2'>
-						<User className='align-middle' size={20} />
-						<span className='ms-1 d-none d-sm-block'>Usuário</span>{' '}
-					</button>
+						<span className='ms-1'>Ver Código</span>{' '}
+					</a>
 				</div>
 
 				<div className='mt-4'>
@@ -51,7 +52,7 @@ export default function CardRepo({ props }: ICardRepo) {
 						</li>
 						<li className='list-group-item bg-dark text-white d-flex justify-content-between'>
 							<div className='d-flex align-items-center justify-content-center'>
-								<Users size={22} />
+								<GitPullRequest size={22} />
 								<span className='ms-2 fw-bolder text--gray'>Forks</span>
 							</div>
 							<span>{props.forks}</span>

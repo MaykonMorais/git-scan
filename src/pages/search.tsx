@@ -128,7 +128,7 @@ export default function SearchPage() {
 					<div className='d-flex justify-content-center mt-4'>
 						{data.length > 0 && (
 							<Pagination
-								total={totalCount}
+								total={Math.ceil(totalCount / 6)}
 								current={currentPage}
 								maxWidth={500}
 								onPageChange={page => handlePageChange(page)}

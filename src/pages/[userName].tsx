@@ -16,7 +16,7 @@ import {
 import { Icon, IconName } from '@src/components/Icon'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchRepos, setTabArea } from '@actions/search'
+import { fetchRepos, setTabArea } from '@actions/user'
 
 import Pagination from 'react-responsive-pagination'
 
@@ -50,10 +50,10 @@ export default function User() {
 	const dispatch = useDispatch()
 
 	const { tabArea, selectedItem, repos } = useSelector(
-		({ search }: IRootState) => ({
-			selectedItem: search.selectedItem,
-			tabArea: search.tabArea,
-			repos: search.repos,
+		({ user }: IRootState) => ({
+			selectedItem: user.selectedItem,
+			tabArea: user.tabArea,
+			repos: user.repos,
 		})
 	)
 
@@ -79,8 +79,6 @@ export default function User() {
 		})
 	}
 
-	// const { userName } = router.query
-
 	useEffect(() => {
 		if (selectedItem) {
 			dispatch(fetchRepos(selectedItem.login, tabArea, currentPage))
@@ -88,7 +86,7 @@ export default function User() {
 	}, [])
 
 	return (
-		<main className='container-fluid py-2 w-100 min-h-100 d-flex flex-column align-items-center'>
+		<main className='container-fluid py-2 d-flex flex-column align-items-center'>
 			<div className='w-100 d-flex justify-content-end align-items-center'>
 				<button
 					className='btn btn-primary  mt-2 d-flex align-items-center justify-content-center'
@@ -103,7 +101,7 @@ export default function User() {
 				<img src='/logo.svg' alt='Logo' />
 			</div>
 
-			<div className='bg-dark border p-4 rounded shadow-sm'>
+			<div className='bg-dark border p-4 rounded shadow-sm col-12 col-sm-10 col-xl-8'>
 				<div className='row '>
 					<div className='col-12 d-flex flex-column '>
 						<div className='row'>
@@ -111,7 +109,7 @@ export default function User() {
 								className='rounded col-12 col-md-2 mb-2 img-fluid'
 								width={200}
 								src={selectedItem.avatarUrl}
-								alt=''
+								alt='Avatar'
 							/>
 							<div className='col-10 d-flex flex-column justify-content-center'>
 								<h3 className='text-white'>
@@ -121,6 +119,7 @@ export default function User() {
 								{selectedItem.bio && (
 									<span className='text-white mb-2'>{selectedItem.bio}</span>
 								)}
+
 								<div className='d-flex '>
 									<div className='d-flex align-items-center'>
 										<Box className='text-primary' size={22} />
@@ -174,14 +173,19 @@ export default function User() {
 							{tabArea === 'repos' ? 'Repositórios Públicos' : 'Estrelas'}
 						</h4>
 
-						{repos.map((repo, index) => (
+						{repos.map(repo => (
 							<div key={`repo-${repo.id}`} className='border rounded p-3 mb-4'>
 								<div className='d-flex justify-content-between align-items-center'>
 									<h4 className='text-white'>{repo.name}</h4>
-									<button className='btn btn-primary d-flex align-items-center justify-content-center'>
+									<a
+										target='_blank'
+										href={`https://github1s.com/${repo.fullName}`}
+										className='btn btn-primary d-flex align-items-center justify-content-center'
+										rel='noreferrer'
+									>
 										<Code className='align-middle' size={20} />
 										<span className='ms-1 d-none d-sm-block'>Código</span>{' '}
-									</button>
+									</a>
 								</div>
 
 								<p className='text-white'>{repo.description} </p>
@@ -208,6 +212,7 @@ export default function User() {
 								<Pagination
 									total={Math.ceil(selectedItem.publicRepos / 10)}
 									current={currentPage}
+									maxWidth={200}
 									onPageChange={page => handlePageChange(page)}
 								/>
 							)}
