@@ -11,12 +11,10 @@ export default function SearchBar() {
 
 	const searchType = useSelector(({ search }: IRootState) => search.typeSearch)
 
-	const onHandleSearch = async event => {
+	const onHandleSearch = async (event: any) => {
 		event.preventDefault()
 
-		dispatch(
-			searchData(event.target.searchText.value, searchType, defaultCurrentPage)
-		)
+		dispatch(searchData(event.target.value, searchType, defaultCurrentPage))
 	}
 
 	return (

@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/client'
 
-export default function Auth({ children }) {
+export default function Auth({ children }: any) {
 	const [session, loading] = useSession()
 	const hasUser = !!session?.user
 	const router = useRouter()
@@ -13,7 +13,7 @@ export default function Auth({ children }) {
 		}
 	}, [loading, hasUser])
 	if (loading || !hasUser) {
-		return <div>Waiting for session...</div>
+		return <div>Carregando...</div>
 	}
 	return children
 }

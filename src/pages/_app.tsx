@@ -10,12 +10,22 @@ import '@src/styles/scss/global.scss'
 // ** Components
 import Head from '@components/Head'
 
+import { NextPage } from 'next'
 import DefaultLayout from '@src/components/Layout/Default'
 import Auth from '@src/components/Auth'
 
 import { store } from '@src/store/storeConfig/store'
 
-function MyApp({ Component, pageProps }: AppProps) {
+export type NextApplicationPage<P = any, IP = P> = NextPage<P, IP> & {
+	auth?: boolean
+}
+
+function MyApp(props: AppProps) {
+	const {
+		Component,
+		pageProps,
+	}: { Component: NextApplicationPage; pageProps: any } = props
+
 	const keywords = ['git', 'github']
 	const url = 'https://gitscan.com'
 
@@ -31,7 +41,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 					/>
 				</Head>
 				<DefaultLayout>
-					{Component.auth ? (
+					{(Component.auth as boolean) ? (
 						<Auth>
 							<Component {...pageProps} />
 						</Auth>
