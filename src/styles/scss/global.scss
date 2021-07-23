@@ -16,6 +16,13 @@ $font-family-sans-serif: 'Inter', sans-serif;
 $headings-font-family: 'Inter', 'Lucida Calligraphy', 'Monotype Corsiva',
 	cursive;
 
+$pagination-color: #fff;
+$pagination-bg: #141419;
+$pagination-focus-bg: #8e46f7;
+
+$pagination-active-bg: #8e46f7;
+$pagination-disabled-bg: #141419;
+
 body {
 	font-family: 'Montserrat', Arial, Helvetica, sans-serif;
 	width: 100vw;

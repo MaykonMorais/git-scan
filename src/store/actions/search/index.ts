@@ -1,15 +1,36 @@
-import { searchRepositories } from '@src/services/api'
+import { searchRepositories, searchUser } from '@src/services/api'
 
 import { Dispatch } from 'redux'
+import humps from 'humps'
 
-export const searchData = (searchText: string) => {
+export const searchData = (searchText: string, entity: string, page: number) => {
 	return async (dispatch: Dispatch) => {
+		dispatch({ type: 'SET_LOADING', loading: true })
+
 		try {
-			const { data } = await searchRepositories(searchText, 'javascript')
+			let result
+			switch (entity) {
+				case 'repos': {
+					result = await searchRepositories(searchText, page)
+					break
+				}
+
+				case 'users': {
+					result = await searchUser(searchText, page)
+					break
+				}
+
+				default: {
+					// mais pesquisados
+					result = await searchUser(searchText, page)
+				}
+			}
+			dispatch({ type: 'SET_LOADING', loading: false })
 
 			dispatch({
 				type: 'SET_RESULT_SEARCH',
-				data,
+				data: humps.camelizeKeys(result.data.items),
+				totalCount: result.data.total_count,
 			})
 		} catch (error) {}
 	}
@@ -17,10 +38,19 @@ export const searchData = (searchText: string) => {
 
 export const setTypeSearch = (type: string) => {
 	return async (dispatch: Dispatch) => {
+		dispatch({
+			type: 'SET_TYPE_SEARCH',
+			typeSearch: type,
+		})
+	}
+}
+
+export const setLoading = (type: string) => {
+	return async (dispatch: Dispatch) => {
 		// dispatch({ type: 'SET_LOADING' })
 
 		dispatch({
-			type: 'SET_TYPE_SEARCH',
+			type: 'SET_LOADING',
 			typeSearch: type,
 		})
 	}

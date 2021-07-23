@@ -8,13 +8,31 @@ const axiosConfig = {
 	},
 }
 
-function searchRepositories(searchText: string, language: string) {
-	const query = language ? `${searchText}+language:${language}` : searchText
-
+function searchRepositories(searchText: string, page: number) {
 	return axios.get(
-		`/search/repositories?q=${query}&sort=stars&order=desc&per_page=5`,
+		`/search/repositories?q=${searchText}&sort=stars&order=desc&per_page=5&page=${page}`,
 		axiosConfig
 	)
 }
 
-export { searchRepositories }
+async function searchUser(searchText: string, page: number) {
+	const { data } = await axios.get(
+		`/search/users?q=${searchText}&sort=stars&order=desc&per_page=6&page=${page}`,
+		axiosConfig
+	)
+
+	const result = await Promise.all(
+		data.items.map(async item => {
+			const { data } = await fetchSpecificUser(item.login)
+
+			return data
+		})
+	)
+	return { data: { items: result, total_count: data.total_count } }
+}
+
+function fetchSpecificUser(login: string) {
+	return axios.get(`/users/${login}`, axiosConfig)
+}
+
+export { searchRepositories, searchUser }

@@ -1,16 +1,18 @@
 import { Search } from 'react-feather'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { searchData } from '@actions/search'
+import { IRootState } from '@src/types'
 
 export default function SearchBar() {
 	const dispatch = useDispatch()
 
+	const searchType = useSelector(({ search }: IRootState) => search.typeSearch)
+
 	const onHandleSearch = async event => {
 		event.preventDefault()
-		console.log(event.target.searchText.value)
 
-		dispatch(searchData(event.target.searchText.value))
+		dispatch(searchData(event.target.searchText.value, searchType))
 	}
 
 	return (
