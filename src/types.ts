@@ -42,6 +42,7 @@ export interface IRepository {
 	forks: number
 	openIssues: number
 	description: string
+	fullName: string
 }
 
 export interface ISearchState {
@@ -55,6 +56,15 @@ export interface ISearchState {
 	repos: [IRepository]
 }
 
+export interface IUserState {
+	loading: boolean
+	totalCount: number
+	selectedItem: IUser
+	tabArea: string
+	repos: [IRepository]
+}
+
 export interface IRootState {
 	search: ISearchState
+	user: IUserState
 }
