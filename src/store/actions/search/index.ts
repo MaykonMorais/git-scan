@@ -1,9 +1,14 @@
-import { searchRepositories, searchUser } from '@src/services/api'
+import {
+	searchRepositories,
+	searchUser,
+	fetchUserRepos,
+} from '@src/services/api'
 
 import { Dispatch } from 'redux'
 import humps from 'humps'
 import { IRepository, IUser } from '@src/types'
 
+// fetch dados básicos de pesquisas
 export const searchData = (
 	searchText: string,
 	entity: string,
@@ -41,6 +46,21 @@ export const searchData = (
 	}
 }
 
+export function fetchRepos(userName: string, typeRepo: string, page: number) {
+	return async (dispatch: Dispatch) => {
+		dispatch({ type: 'SET_LOADING', loading: true })
+
+		const { data } = await fetchUserRepos(userName, typeRepo, page)
+
+		dispatch({ type: 'SET_LOADING', loading: false })
+
+		dispatch({
+			type: 'SET_REPOS',
+			repos: humps.camelizeKeys(data),
+		})
+	}
+}
+
 export const setTypeSearch = (type: string) => {
 	return async (dispatch: Dispatch) => {
 		dispatch({
@@ -50,10 +70,9 @@ export const setTypeSearch = (type: string) => {
 	}
 }
 
+// Ver método depois (confuso)
 export const setLoading = (type: string) => {
 	return async (dispatch: Dispatch) => {
-		// dispatch({ type: 'SET_LOADING' })
-
 		dispatch({
 			type: 'SET_LOADING',
 			typeSearch: type,
@@ -66,6 +85,15 @@ export const setSelectedItem = (item: IUser | IRepository, tabArea: string) => {
 		dispatch({
 			type: 'SET_SELECTED_ITEM',
 			selectedItem: item,
+			tabArea,
+		})
+	}
+}
+
+export const setTabArea = (tabArea: string) => {
+	return async (dispatch: Dispatch) => {
+		dispatch({
+			type: 'SET_TAB_AREA',
 			tabArea,
 		})
 	}

@@ -52,6 +52,10 @@ export default function SearchPage() {
 		setCurrentPage(page)
 
 		dispatch(searchData(query, typeSearch, page))
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		})
 	}
 
 	const handleCheckedValue = (id: number) => {

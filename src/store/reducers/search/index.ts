@@ -7,6 +7,7 @@ const initialState = {
 	totalCount: 0,
 	selectedItem: null,
 	tabArea: 'repos',
+	repos: [],
 }
 
 interface IAction extends ISearchState {
@@ -22,23 +23,37 @@ const searchReducer = (state = initialState, action: IAction) => {
 				totalCount: action.totalCount,
 				query: action.query,
 			}
+
 		case 'SET_TYPE_SEARCH':
 			return {
 				...state,
 				typeSearch: action.typeSearch,
 			}
+
 		case 'SET_LOADING':
 			return {
 				...state,
 				loading: action.loading,
 			}
-		case 'SET_SELECTED_ITEM': {
+
+		case 'SET_SELECTED_ITEM':
 			return {
 				...state,
 				selectedItem: action.selectedItem,
 				tabArea: action.tabArea,
 			}
-		}
+
+		case 'SET_TAB_AREA':
+			return {
+				...state,
+				tabArea: action.tabArea,
+			}
+
+		case 'SET_REPOS':
+			return {
+				...state,
+				repos: action.repos,
+			}
 
 		default:
 			return { ...state }

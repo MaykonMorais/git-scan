@@ -41,6 +41,7 @@ export interface IRepository {
 	watchers: number
 	forks: number
 	openIssues: number
+	description: string
 }
 
 export interface ISearchState {
@@ -51,6 +52,7 @@ export interface ISearchState {
 	query: string
 	selectedItem: IUser
 	tabArea: string
+	repos: [IRepository]
 }
 
 export interface IRootState {

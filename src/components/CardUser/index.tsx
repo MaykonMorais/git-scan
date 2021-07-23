@@ -31,7 +31,7 @@ export default function CardUser({ props }: ICardUser) {
 						alt=''
 					/>
 					<span className='fw-bolderer fs-3 text-white text-truncate'>
-						{props.name}
+						{props.name || props.login}
 					</span>
 				</div>
 

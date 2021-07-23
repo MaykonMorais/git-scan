@@ -31,8 +31,15 @@ async function searchUser(searchText: string, page: number) {
 	return { data: { items: result, total_count: data.total_count } }
 }
 
+function fetchUserRepos(userName: string, typeRepo: string, page: number) {
+	return axios.get(
+		`/users/${userName}/${typeRepo}?per_page=10&page=${page}`,
+		axiosConfig
+	)
+}
+
 function fetchSpecificUser(login: string) {
 	return axios.get(`/users/${login}`, axiosConfig)
 }
 
-export { searchRepositories, searchUser }
+export { searchRepositories, searchUser, fetchUserRepos }

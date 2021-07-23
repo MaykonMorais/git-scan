@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useState, useEffect } from 'react'
 import { signOut } from 'next-auth/client'
 
 import {
@@ -12,10 +12,14 @@ import {
 	GitPullRequest,
 	Eye,
 } from 'react-feather'
-import { useState } from 'react'
+
 import { Icon, IconName } from '@src/components/Icon'
 
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchRepos, setTabArea } from '@actions/search'
+
+import Pagination from 'react-responsive-pagination'
+
 import { IRootState } from '@src/types'
 
 interface ITabButton {
@@ -41,17 +45,47 @@ const tabs: ITabButton[] = [
 ]
 
 export default function User() {
-	const [activeButton, setActiveButton] = useState(0)
+	const [currentPage, setCurrentPage] = useState(1)
 
-	const { tabArea, selectedItem } = useSelector(({ search }: IRootState) => ({
-		selectedItem: search.selectedItem,
-		tabArea: search.tabArea,
-	}))
+	const dispatch = useDispatch()
 
-	const router = useRouter()
-	const { userName } = router.query
+	const { tabArea, selectedItem, repos } = useSelector(
+		({ search }: IRootState) => ({
+			selectedItem: search.selectedItem,
+			tabArea: search.tabArea,
+			repos: search.repos,
+		})
+	)
 
-	console.log(selectedItem)
+	// const router = useRouter()
+
+	const handleTabChange = (tabArea: string) => {
+		dispatch(setTabArea(tabArea))
+
+		dispatch(fetchRepos(selectedItem.login, tabArea, currentPage))
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		})
+	}
+
+	const handlePageChange = (page: number) => {
+		setCurrentPage(page)
+
+		dispatch(fetchRepos(selectedItem.login, tabArea, page))
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		})
+	}
+
+	// const { userName } = router.query
+
+	useEffect(() => {
+		if (selectedItem) {
+			dispatch(fetchRepos(selectedItem.login, tabArea, currentPage))
+		}
+	}, [])
 
 	return (
 		<main className='container-fluid py-2 w-100 min-h-100 d-flex flex-column align-items-center'>
@@ -80,26 +114,38 @@ export default function User() {
 								alt=''
 							/>
 							<div className='col-10 d-flex flex-column justify-content-center'>
-								<h3 className='text-white'>{selectedItem.login}</h3>
+								<h3 className='text-white'>
+									{selectedItem.name || selectedItem.login}
+								</h3>
 
-								<span className='text-white mb-2'>{selectedItem.bio}</span>
+								{selectedItem.bio && (
+									<span className='text-white mb-2'>{selectedItem.bio}</span>
+								)}
 								<div className='d-flex '>
 									<div className='d-flex align-items-center'>
 										<Box className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>22</span>
+										<span className='fs-5 ms-1 text-primary'>
+											{selectedItem.publicRepos}
+										</span>
 									</div>
 
 									<div className='d-flex align-items-center ms-3'>
 										<Users className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>22</span>
+										<span className='fs-5 ms-1 text-primary'>
+											{selectedItem.followers}
+										</span>
 									</div>
 									<div className='d-flex align-items-center ms-3'>
 										<Following className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>30</span>
+										<span className='fs-5 ms-1 text-primary'>
+											{selectedItem.following}
+										</span>
 									</div>
 									<div className='d-flex align-items-center ms-3'>
 										<Book className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>30</span>
+										<span className='fs-5 ms-1 text-primary'>
+											{selectedItem.publicGists}
+										</span>
 									</div>
 								</div>
 							</div>
@@ -108,13 +154,13 @@ export default function User() {
 				</div>
 
 				<div className='mt-2 d-flex gap-2'>
-					{tabs.map((tab, index) => (
+					{tabs.map(tab => (
 						<button
 							key={`tab-${tab.id}`}
 							className={`btn btn-outline-primary mt-2 d-flex align-items-center justify-content-center ${
 								tab.name === tabArea ? 'active' : ''
 							}`}
-							onClick={() => setActiveButton(index)}
+							onClick={() => handleTabChange(tab.name)}
 						>
 							<Icon name={tab.icon} className='align-middle' size={20} />
 							<span className='ms-1'>{tab.value}</span>{' '}
@@ -125,36 +171,46 @@ export default function User() {
 				<div className='row'>
 					<div className='col mt-4'>
 						<h4 className='text-white'>
-							{activeButton === 0 ? 'Repositórios Públicos' : 'Estrelas'}
+							{tabArea === 'repos' ? 'Repositórios Públicos' : 'Estrelas'}
 						</h4>
 
-						<div className='border rounded p-3'>
-							<div className='d-flex justify-content-between align-items-center'>
-								<h4 className='text-white'>follow-wave</h4>
-								<button className='btn btn-primary d-flex align-items-center justify-content-center'>
-									<Code className='align-middle' size={20} />
-									<span className='ms-1 d-none d-sm-block'>Código</span>{' '}
-								</button>
-							</div>
-
-							<p className='text-white'>
-								An API for Weather Forecasting and Beaches Assessment
-							</p>
-							<div className='d-flex '>
-								<div className='d-flex align-items-center'>
-									<Star className='text-primary' size={22} />
-									<span className='fs-5 ms-1 text-primary'>22</span>
+						{repos.map((repo, index) => (
+							<div key={`repo-${repo.id}`} className='border rounded p-3 mb-4'>
+								<div className='d-flex justify-content-between align-items-center'>
+									<h4 className='text-white'>{repo.name}</h4>
+									<button className='btn btn-primary d-flex align-items-center justify-content-center'>
+										<Code className='align-middle' size={20} />
+										<span className='ms-1 d-none d-sm-block'>Código</span>{' '}
+									</button>
 								</div>
 
-								<div className='d-flex align-items-center ms-3'>
-									<Eye className='text-primary' size={22} />
-									<span className='fs-5 ms-1 text-primary'>22</span>
-								</div>
-								<div className='d-flex align-items-center ms-3'>
-									<GitPullRequest className='text-primary' size={22} />
-									<span className='fs-5 ms-1 text-primary'>30</span>
+								<p className='text-white'>{repo.description} </p>
+								<div className='d-flex '>
+									<div className='d-flex align-items-center'>
+										<Star className='text-primary' size={22} />
+										<span className='fs-5 ms-1 text-primary'>{repo.stargazersCount}</span>
+									</div>
+
+									<div className='d-flex align-items-center ms-3'>
+										<Eye className='text-primary' size={22} />
+										<span className='fs-5 ms-1 text-primary'>{repo.watchers}</span>
+									</div>
+									<div className='d-flex align-items-center ms-3'>
+										<GitPullRequest className='text-primary' size={22} />
+										<span className='fs-5 ms-1 text-primary'>{repo.forks}</span>
+									</div>
 								</div>
 							</div>
+						))}
+
+						<div className='d-flex justify-content-center mt-4'>
+							{selectedItem.publicRepos > 0 && (
+								<Pagination
+									total={Math.ceil(selectedItem.publicRepos / 10)}
+									current={currentPage}
+									onPageChange={page => handlePageChange(page)}
+								/>
+							)}
 						</div>
 					</div>
 				</div>
