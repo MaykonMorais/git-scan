@@ -7,7 +7,7 @@ function Error() {
 		<main className='container row flex-grow-1 align-items-center p-1'>
 			<div className='h-100 d-flex-column justify-content-center align-items-center w-100'>
 				<div className='d-flex flex-column align-items-center'>
-					<img src='/logo.svg' width={400} alt='' />
+					<img src='/logo.svg' alt='' />
 					<h4 className='text-white mt-4'>
 						Ops! Operação não permitida no momento.
 					</h4>

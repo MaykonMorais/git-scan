@@ -4,7 +4,7 @@ import { Dispatch } from 'redux'
 import humps from 'humps'
 import { IRepository, IUser } from '@src/types'
 
-export function fetchRepos(userName: string, typeRepo: string, page: number) {
+export function fetchRepos(userName: string, typeRepo: string, page = 1) {
 	return async (dispatch: Dispatch) => {
 		dispatch({ type: 'SET_LOADING_REPOS', loading: true })
 

@@ -3,17 +3,7 @@ import { signOut } from 'next-auth/client'
 
 import { useRouter } from 'next/router'
 
-import {
-	LogOut,
-	Users,
-	User as Following,
-	Box,
-	Book,
-	Code,
-	Star,
-	GitPullRequest,
-	Eye,
-} from 'react-feather'
+import { LogOut } from 'react-feather'
 
 import { Icon, IconName } from '@src/components/Icon'
 
@@ -23,6 +13,8 @@ import { fetchRepos, setTabArea } from '@actions/user'
 import Pagination from 'react-responsive-pagination'
 
 import { IRootState, IUser } from '@src/types'
+import RepoDetail from '@src/components/RepoDetail'
+import UserArea from '@src/components/UserArea'
 
 interface ITabButton {
 	id: number
@@ -48,8 +40,6 @@ const tabs: ITabButton[] = [
 
 export default function User() {
 	const router = useRouter()
-	const { userName } = router.query
-
 	const [userData, setUserData] = useState<IUser>()
 
 	const [currentPage, setCurrentPage] = useState(1)
@@ -63,14 +53,6 @@ export default function User() {
 			repos: user.repos,
 		})
 	)
-
-	useEffect(() => {
-		const localUser = JSON.parse(
-			window.localStorage.getItem('selectedItem') || ''
-		)
-
-		setUserData(localUser)
-	}, [])
 
 	const handleTabChange = (tabArea: string) => {
 		dispatch(setTabArea(tabArea))
@@ -87,7 +69,9 @@ export default function User() {
 	const handlePageChange = (page: number) => {
 		setCurrentPage(page)
 
-		dispatch(fetchRepos(selectedItem.login, tabArea, page))
+		const login = userData ? userData.login : selectedItem.login
+
+		dispatch(fetchRepos(login, tabArea, page))
 		window.scrollTo({
 			top: 0,
 			behavior: 'smooth',
@@ -95,12 +79,19 @@ export default function User() {
 	}
 
 	useEffect(() => {
+		const userName = window.location.pathname.slice(1)
+		const localUser = JSON.parse(
+			window.localStorage.getItem('selectedItem') || ''
+		)
+
 		if (selectedItem) {
-			dispatch(fetchRepos(selectedItem.login, tabArea, currentPage))
+			dispatch(fetchRepos(selectedItem.login, tabArea))
 		}
 
-		if (userName !== userData?.login) {
-			router.push('error')
+		if (localUser.login !== userName) {
+			router.replace('/error')
+		} else {
+			setUserData(localUser)
 		}
 	}, [])
 
@@ -123,45 +114,7 @@ export default function User() {
 				<div className='bg-dark border p-4 rounded shadow-sm col-12 col-sm-10 col-xl-8'>
 					<div className='row '>
 						<div className='col-12 d-flex flex-column '>
-							<div className='row'>
-								<img
-									className='rounded col-12 col-md-2 mb-2 img-fluid'
-									width={200}
-									src={userData.avatarUrl}
-									alt='Avatar'
-								/>
-								<div className='col-10 d-flex flex-column justify-content-center'>
-									<h3 className='text-white'>{userData.name || userData.login}</h3>
-
-									{userData.bio && (
-										<span className='text-white mb-2'>{userData.bio}</span>
-									)}
-
-									<div className='d-flex '>
-										<div className='d-flex align-items-center'>
-											<Box className='text-primary' size={22} />
-											<span className='fs-5 ms-1 text-primary'>
-												{userData.publicRepos}
-											</span>
-										</div>
-
-										<div className='d-flex align-items-center ms-3'>
-											<Users className='text-primary' size={22} />
-											<span className='fs-5 ms-1 text-primary'>{userData.followers}</span>
-										</div>
-										<div className='d-flex align-items-center ms-3'>
-											<Following className='text-primary' size={22} />
-											<span className='fs-5 ms-1 text-primary'>{userData.following}</span>
-										</div>
-										<div className='d-flex align-items-center ms-3'>
-											<Book className='text-primary' size={22} />
-											<span className='fs-5 ms-1 text-primary'>
-												{userData.publicGists}
-											</span>
-										</div>
-									</div>
-								</div>
-							</div>
+							<UserArea userData={userData} />
 						</div>
 					</div>
 
@@ -189,39 +142,7 @@ export default function User() {
 							)}
 
 							{repos.map(repo => (
-								<div key={`repo-${repo.id}`} className='border rounded p-3 mb-4'>
-									<div className='d-flex justify-content-between align-items-center'>
-										<h4 className='text-white'>{repo.name}</h4>
-										<a
-											target='_blank'
-											href={`https://github1s.com/${repo.fullName}`}
-											className='btn btn-primary d-flex align-items-center justify-content-center'
-											rel='noreferrer'
-										>
-											<Code className='align-middle' size={20} />
-											<span className='ms-1 d-none d-sm-block'>Código</span>{' '}
-										</a>
-									</div>
-
-									<p className='text-white'>{repo.description} </p>
-									<div className='d-flex '>
-										<div className='d-flex align-items-center'>
-											<Star className='text-primary' size={22} />
-											<span className='fs-5 ms-1 text-primary'>
-												{repo.stargazersCount}
-											</span>
-										</div>
-
-										<div className='d-flex align-items-center ms-3'>
-											<Eye className='text-primary' size={22} />
-											<span className='fs-5 ms-1 text-primary'>{repo.watchers}</span>
-										</div>
-										<div className='d-flex align-items-center ms-3'>
-											<GitPullRequest className='text-primary' size={22} />
-											<span className='fs-5 ms-1 text-primary'>{repo.forks}</span>
-										</div>
-									</div>
-								</div>
+								<RepoDetail key={`repo-${repo.id}`} repo={repo} />
 							))}
 
 							<div className='d-flex justify-content-center mt-4'>

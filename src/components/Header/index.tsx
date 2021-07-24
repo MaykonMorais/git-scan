@@ -9,13 +9,13 @@ export default function Header() {
 			<img className='img-fluid h-75' src='logo.svg' alt='Git Scan Logo' />
 
 			<div className='d-flex'>
-				<div className='rounded-circle align-items-center cursor'>
+				<div className='rounded-circle align-items-center pointer'>
 					<Instagram className='text-white' size={26} />
 				</div>
-				<div className='rounded-circle align-items-center ms-3 cursor'>
+				<div className='rounded-circle align-items-center ms-3 pointer'>
 					<Twitter className='text-white' size={26} />
 				</div>
-				<div className='rounded-circle align-items-center ms-3 cursor'>
+				<div className='rounded-circle align-items-center ms-3 pointer'>
 					<Youtube className='text-white' size={26} />
 				</div>
 			</div>
