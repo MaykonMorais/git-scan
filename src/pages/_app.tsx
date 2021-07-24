@@ -25,7 +25,6 @@ function MyApp(props: AppProps) {
 		Component,
 		pageProps,
 	}: { Component: NextApplicationPage; pageProps: any } = props
-
 	const keywords = ['git', 'github']
 	const url = 'https://gitscan.com'
 

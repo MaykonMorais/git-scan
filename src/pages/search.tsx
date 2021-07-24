@@ -22,12 +22,7 @@ const filterOptions = [
 	},
 	{
 		id: 2,
-		name: 'Repositórios',
-		value: 'repos',
-	},
-	{
-		id: 3,
-		name: 'Mais Visitados',
+		name: 'Repositórios Públicos',
 		value: 'repos',
 	},
 ]
@@ -98,7 +93,10 @@ export default function SearchPage() {
 								checked={checkedValue === option.id}
 								onChange={() => handleCheckedValue(option.id)}
 							/>
-							<label className='form-check-label' htmlFor={`radio-${option.id}`}>
+							<label
+								className='form-check-label text-white'
+								htmlFor={`radio-${option.id}`}
+							>
 								{option.name}
 							</label>
 						</div>

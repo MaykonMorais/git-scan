@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { signOut } from 'next-auth/client'
 
+import { useRouter } from 'next/router'
+
 import {
 	LogOut,
 	Users,
@@ -20,7 +22,7 @@ import { fetchRepos, setTabArea } from '@actions/user'
 
 import Pagination from 'react-responsive-pagination'
 
-import { IRootState } from '@src/types'
+import { IRootState, IUser } from '@src/types'
 
 interface ITabButton {
 	id: number
@@ -45,6 +47,11 @@ const tabs: ITabButton[] = [
 ]
 
 export default function User() {
+	const router = useRouter()
+	const { userName } = router.query
+
+	const [userData, setUserData] = useState<IUser>()
+
 	const [currentPage, setCurrentPage] = useState(1)
 
 	const dispatch = useDispatch()
@@ -57,12 +64,20 @@ export default function User() {
 		})
 	)
 
-	// const router = useRouter()
+	useEffect(() => {
+		const localUser = JSON.parse(
+			window.localStorage.getItem('selectedItem') || ''
+		)
+
+		setUserData(localUser)
+	}, [])
 
 	const handleTabChange = (tabArea: string) => {
 		dispatch(setTabArea(tabArea))
 
-		dispatch(fetchRepos(selectedItem.login, tabArea, currentPage))
+		const login = userData ? userData.login : selectedItem.login
+
+		dispatch(fetchRepos(login, tabArea, currentPage))
 		window.scrollTo({
 			top: 0,
 			behavior: 'smooth',
@@ -83,6 +98,10 @@ export default function User() {
 		if (selectedItem) {
 			dispatch(fetchRepos(selectedItem.login, tabArea, currentPage))
 		}
+
+		if (userName !== userData?.login) {
+			router.push('error')
+		}
 	}, [])
 
 	return (
@@ -100,128 +119,125 @@ export default function User() {
 			<div className='my-4 h-25 d-flex justify-content-center'>
 				<img src='/logo.svg' alt='Logo' />
 			</div>
-
-			<div className='bg-dark border p-4 rounded shadow-sm col-12 col-sm-10 col-xl-8'>
-				<div className='row '>
-					<div className='col-12 d-flex flex-column '>
-						<div className='row'>
-							<img
-								className='rounded col-12 col-md-2 mb-2 img-fluid'
-								width={200}
-								src={selectedItem.avatarUrl}
-								alt='Avatar'
-							/>
-							<div className='col-10 d-flex flex-column justify-content-center'>
-								<h3 className='text-white'>
-									{selectedItem.name || selectedItem.login}
-								</h3>
-
-								{selectedItem.bio && (
-									<span className='text-white mb-2'>{selectedItem.bio}</span>
-								)}
-
-								<div className='d-flex '>
-									<div className='d-flex align-items-center'>
-										<Box className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>
-											{selectedItem.publicRepos}
-										</span>
-									</div>
-
-									<div className='d-flex align-items-center ms-3'>
-										<Users className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>
-											{selectedItem.followers}
-										</span>
-									</div>
-									<div className='d-flex align-items-center ms-3'>
-										<Following className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>
-											{selectedItem.following}
-										</span>
-									</div>
-									<div className='d-flex align-items-center ms-3'>
-										<Book className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>
-											{selectedItem.publicGists}
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div className='mt-2 d-flex gap-2'>
-					{tabs.map(tab => (
-						<button
-							key={`tab-${tab.id}`}
-							className={`btn btn-outline-primary mt-2 d-flex align-items-center justify-content-center ${
-								tab.name === tabArea ? 'active' : ''
-							}`}
-							onClick={() => handleTabChange(tab.name)}
-						>
-							<Icon name={tab.icon} className='align-middle' size={20} />
-							<span className='ms-1'>{tab.value}</span>{' '}
-						</button>
-					))}
-				</div>
-
-				<div className='row'>
-					<div className='col mt-4'>
-						<h4 className='text-white'>
-							{tabArea === 'repos' ? 'Repositórios Públicos' : 'Estrelas'}
-						</h4>
-
-						{repos.map(repo => (
-							<div key={`repo-${repo.id}`} className='border rounded p-3 mb-4'>
-								<div className='d-flex justify-content-between align-items-center'>
-									<h4 className='text-white'>{repo.name}</h4>
-									<a
-										target='_blank'
-										href={`https://github1s.com/${repo.fullName}`}
-										className='btn btn-primary d-flex align-items-center justify-content-center'
-										rel='noreferrer'
-									>
-										<Code className='align-middle' size={20} />
-										<span className='ms-1 d-none d-sm-block'>Código</span>{' '}
-									</a>
-								</div>
-
-								<p className='text-white'>{repo.description} </p>
-								<div className='d-flex '>
-									<div className='d-flex align-items-center'>
-										<Star className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>{repo.stargazersCount}</span>
-									</div>
-
-									<div className='d-flex align-items-center ms-3'>
-										<Eye className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>{repo.watchers}</span>
-									</div>
-									<div className='d-flex align-items-center ms-3'>
-										<GitPullRequest className='text-primary' size={22} />
-										<span className='fs-5 ms-1 text-primary'>{repo.forks}</span>
-									</div>
-								</div>
-							</div>
-						))}
-
-						<div className='d-flex justify-content-center mt-4'>
-							{selectedItem.publicRepos > 0 && (
-								<Pagination
-									total={Math.ceil(selectedItem.publicRepos / 10)}
-									current={currentPage}
-									maxWidth={200}
-									onPageChange={page => handlePageChange(page)}
+			{userData && (
+				<div className='bg-dark border p-4 rounded shadow-sm col-12 col-sm-10 col-xl-8'>
+					<div className='row '>
+						<div className='col-12 d-flex flex-column '>
+							<div className='row'>
+								<img
+									className='rounded col-12 col-md-2 mb-2 img-fluid'
+									width={200}
+									src={userData.avatarUrl}
+									alt='Avatar'
 								/>
+								<div className='col-10 d-flex flex-column justify-content-center'>
+									<h3 className='text-white'>{userData.name || userData.login}</h3>
+
+									{userData.bio && (
+										<span className='text-white mb-2'>{userData.bio}</span>
+									)}
+
+									<div className='d-flex '>
+										<div className='d-flex align-items-center'>
+											<Box className='text-primary' size={22} />
+											<span className='fs-5 ms-1 text-primary'>
+												{userData.publicRepos}
+											</span>
+										</div>
+
+										<div className='d-flex align-items-center ms-3'>
+											<Users className='text-primary' size={22} />
+											<span className='fs-5 ms-1 text-primary'>{userData.followers}</span>
+										</div>
+										<div className='d-flex align-items-center ms-3'>
+											<Following className='text-primary' size={22} />
+											<span className='fs-5 ms-1 text-primary'>{userData.following}</span>
+										</div>
+										<div className='d-flex align-items-center ms-3'>
+											<Book className='text-primary' size={22} />
+											<span className='fs-5 ms-1 text-primary'>
+												{userData.publicGists}
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className='mt-2 d-flex gap-2'>
+						{tabs.map(tab => (
+							<button
+								key={`tab-${tab.id}`}
+								className={`btn btn-outline-primary mt-2 d-flex align-items-center justify-content-center ${
+									tab.name === tabArea ? 'active' : ''
+								}`}
+								onClick={() => handleTabChange(tab.name)}
+							>
+								<Icon name={tab.icon} className='align-middle' size={20} />
+								<span className='ms-1'>{tab.value}</span>{' '}
+							</button>
+						))}
+					</div>
+
+					<div className='row'>
+						<div className='col mt-4'>
+							{repos.length > 0 && (
+								<h4 className='text-white'>
+									{tabArea === 'repos' ? 'Repositórios Públicos' : 'Estrelas'}
+								</h4>
 							)}
+
+							{repos.map(repo => (
+								<div key={`repo-${repo.id}`} className='border rounded p-3 mb-4'>
+									<div className='d-flex justify-content-between align-items-center'>
+										<h4 className='text-white'>{repo.name}</h4>
+										<a
+											target='_blank'
+											href={`https://github1s.com/${repo.fullName}`}
+											className='btn btn-primary d-flex align-items-center justify-content-center'
+											rel='noreferrer'
+										>
+											<Code className='align-middle' size={20} />
+											<span className='ms-1 d-none d-sm-block'>Código</span>{' '}
+										</a>
+									</div>
+
+									<p className='text-white'>{repo.description} </p>
+									<div className='d-flex '>
+										<div className='d-flex align-items-center'>
+											<Star className='text-primary' size={22} />
+											<span className='fs-5 ms-1 text-primary'>
+												{repo.stargazersCount}
+											</span>
+										</div>
+
+										<div className='d-flex align-items-center ms-3'>
+											<Eye className='text-primary' size={22} />
+											<span className='fs-5 ms-1 text-primary'>{repo.watchers}</span>
+										</div>
+										<div className='d-flex align-items-center ms-3'>
+											<GitPullRequest className='text-primary' size={22} />
+											<span className='fs-5 ms-1 text-primary'>{repo.forks}</span>
+										</div>
+									</div>
+								</div>
+							))}
+
+							<div className='d-flex justify-content-center mt-4'>
+								{repos.length > 0 && (
+									<Pagination
+										total={Math.ceil(userData.publicRepos / 10)}
+										current={currentPage}
+										maxWidth={200}
+										onPageChange={page => handlePageChange(page)}
+									/>
+								)}
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			)}
 		</main>
 	)
 }
-
-User.auth = true

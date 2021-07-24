@@ -17,6 +17,8 @@ export default function CardUser({ props }: ICardUser) {
 	const handleClickRedirect = (area: string) => {
 		dispatch(setSelectedItem(props, area))
 
+		localStorage.setItem('selectedItem', JSON.stringify(props))
+
 		router.push(props.login)
 	}
 
