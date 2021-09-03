@@ -3,18 +3,15 @@ import thunk from 'redux-thunk'
 import createDebounce from 'redux-debounced'
 import rootReducer from '../reducers/rootReducer'
 import { createStore, applyMiddleware, compose } from 'redux'
+import rootSaga from '../sagas/rootSaga'
 
 import { composeWithDevTools } from 'redux-devtools-extension'
+import createSagaMiddleware from '@redux-saga/core'
 
-// const isBrowser = () => typeof window !== 'undefined'
+const sagaMiddleware = createSagaMiddleware()
 
 // ** init middleware
-const middleware = [thunk, createDebounce()]
-
-// // ** Dev Tools
-// const composeEnhancers = isBrowser()
-// 	? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-// 	: undefined || compose
+const middleware = [thunk, createDebounce(), sagaMiddleware]
 
 // ** Create store
 const store = createStore(
@@ -24,5 +21,7 @@ const store = createStore(
 		? composeWithDevTools(applyMiddleware(...middleware))
 		: compose(applyMiddleware(...middleware))
 )
+
+sagaMiddleware.run(rootSaga)
 
 export { store }
