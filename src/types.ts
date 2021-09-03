@@ -62,9 +62,25 @@ export interface IUserState {
 	selectedItem: IUser
 	tabArea: string
 	repos: [IRepository]
+	users: []
 }
 
 export interface IRootState {
 	search: ISearchState
 	user: IUserState
+}
+
+export interface IUserRepo {
+	userName: string
+	typeRepo: string
+	page: number
+}
+
+export interface IActionType {
+	type: string
+}
+
+export interface ISearch {
+	searchText: string
+	page: number
 }

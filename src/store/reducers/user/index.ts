@@ -6,6 +6,7 @@ const initialState = {
 	selectedItem: null,
 	tabArea: 'repos',
 	repos: [],
+	users: [],
 }
 
 interface IAction extends IUserState {
@@ -37,6 +38,12 @@ const userReducer = (state = initialState, action: IAction) => {
 			return {
 				...state,
 				repos: action.repos,
+			}
+
+		case 'SET_USERS':
+			return {
+				...state,
+				users: action.users,
 			}
 
 		default:

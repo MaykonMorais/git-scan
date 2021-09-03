@@ -1,25 +1,25 @@
-import { fetchUserRepos } from '@src/services/api'
-
 import { Dispatch } from 'redux'
-import humps from 'humps'
 import { IRepository, IUser } from '@src/types'
 
 export function fetchRepos(userName: string, typeRepo: string, page = 1) {
 	return async (dispatch: Dispatch) => {
 		dispatch({ type: 'SET_LOADING_REPOS', loading: true })
 
-		const { data } = await fetchUserRepos(userName, typeRepo, page)
-
-		dispatch({ type: 'SET_LOADING_REPOS', loading: false })
+		const payload = {
+			userName,
+			typeRepo,
+			page,
+		}
 
 		dispatch({
-			type: 'SET_REPOS',
-			repos: humps.camelizeKeys(data),
+			type: 'GET_USER_REPOS',
+			payload,
 		})
+
+		dispatch({ type: 'SET_LOADING_REPOS', loading: false })
 	}
 }
 
-// Ver método depois (confuso)
 export const setLoading = (type: string) => {
 	return async (dispatch: Dispatch) => {
 		dispatch({
