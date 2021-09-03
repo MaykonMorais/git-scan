@@ -6,14 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "jest": "jest"
   },
   "dependencies": {
     "axios": "^0.21.1",
     "bootstrap": "^5.0.0-beta3",
     "camelcase-keys": "^7.0.0",
     "humps": "^2.0.1",
-    "next": "11.0.1",
+    "next": "^11.1.2",
     "next-auth": "^3.27.3",
     "react": "17.0.2",
     "react-bootstrap": "^1.6.1",
@@ -27,6 +28,7 @@
     "redux": "^4.1.0",
     "redux-debounced": "^0.5.0",
     "redux-persist": "^6.0.0",
+    "redux-saga": "^1.1.3",
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
@@ -44,6 +46,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.24.0",
+    "jest": "^27.1.0",
     "node-sass": "4.14.1",
     "prettier": "^2.3.2",
     "redux-devtools-extension": "^2.13.9",
